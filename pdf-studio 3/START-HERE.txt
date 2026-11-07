@@ -1,0 +1,32 @@
+PDF STUDIO v1.5.0 — QUICK START (MAC + PODMAN)
+
+MAC WITH PODMAN DESKTOP:
+1. Open Podman Desktop.
+2. Ensure the Podman machine is running.
+3. Ensure the Compose provider is enabled in Podman Desktop Settings.
+4. Double-click START-PDF-STUDIO.command, or run the commands below.
+5. Open http://localhost:8787
+
+TERMINAL:
+   podman machine start
+   podman compose up --build -d
+
+The updated container installs Ghostscript alongside the previously bundled document tools. The first rebuild after this update adds Ghostscript inside the container; do not install it separately on your Mac. No npm package dependencies were added for the compression modes.
+
+COMPRESSION MODES:
+- Lossless: structural optimization only; image data is not intentionally re-encoded/downsampled.
+- Recommended: high-visual-quality image recompression without changing pixel dimensions; minor visual differences are possible.
+- Extreme: stronger recompression and downsampling; inspect the result for visible quality loss.
+
+CHECK THE COMPRESSION ENGINE:
+   podman compose exec pdf-studio gs --version
+   podman compose exec pdf-studio qpdf --version
+
+CHECK API:
+   open http://localhost:8787/api/health
+
+VIEW LOGS:
+   podman compose logs -f pdf-studio
+
+STOP:
+   podman compose down

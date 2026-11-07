@@ -1,0 +1,17 @@
+PDF STUDIO — DEPLOY PREPARATION PATCH
+
+Contains:
+- client/src/App.tsx: routes backend calls through VITE_API_BASE_URL; empty value keeps local Vite proxy behavior. Includes the user's inline @ts-ignore for the pdfjs-dist ?url import.
+- server/src/index.ts: explicitly binds the Express server to 0.0.0.0 for Render.
+- netlify.toml: Netlify build command and publish directory for the React/Vite client.
+
+Deployment architecture:
+- Frontend: Netlify, repository root as base directory, publish client/dist.
+- Backend: Render Web Service using the repository-root Dockerfile.
+- Netlify build environment variable: VITE_API_BASE_URL=https://YOUR-RENDER-SERVICE.onrender.com
+- Render environment variable after creating the Netlify site: CORS_ORIGIN=https://YOUR-SITE.netlify.app
+- Keep MAX_FILE_BYTES=104857600 (100 MB) unless you intentionally want a different limit.
+
+Do not use a Netlify /api proxy rewrite for this app: Netlify's proxy rewrite timeout is 26 seconds, while OCR and conversions may take longer. The frontend instead calls the Render API directly; the backend CORS allowlist is configured with CORS_ORIGIN.
+
+The patch must be overlaid onto the existing v1.5.2 project. Commit and push the resulting project to GitHub before connecting Netlify and Render.
